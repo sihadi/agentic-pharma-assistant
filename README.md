@@ -241,6 +241,12 @@ docs/                     evaluation results + technical walkthrough
 - The FAISS index is rebuilt in memory at start-up (the embedding cache only
   speeds up restarts). Each question costs about 5 LLM calls (≈ 12–25 s).
 
+## 8. AI assistance (transparency)
+
+Built with Claude Code as a pair programmer. Its project instructions are in
+[CLAUDE.md](CLAUDE.md); no MCP servers or custom skills were used. Every
+design decision is documented and measured in this repository.
+
 ---
 
 > **Disclaimer:** This information is generated from publicly available drug
