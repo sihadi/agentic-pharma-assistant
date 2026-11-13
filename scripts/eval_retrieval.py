@@ -1,0 +1,131 @@
+"""Measure retrieval quality of alternative chunking/search configurations.
+
+Usage:  python -m scripts.eval_retrieval [--k 5]
+
+Compares, on the labelled queries in eval/retrieval_queries.json:
+  A  fixed 800/100 char windows, dense only          (spec baseline)
+  B  structure-aware 1500, raw text embedded, dense   (+ structure)
+  C  structure-aware 1500 + contextual header, dense  (+ context)
+  D  C + BM25 fused with RRF                          (+ hybrid)  <- runtime
+  E  D with 800-char chunks                           (size sensitivity)
+  F  D with 2500-char chunks                          (size sensitivity)
+
+Metrics (no LLM involved, only embeddings):
+  file_recall@k - share of required source files present in the top-k
+  hit@k         - a top-k chunk matches a relevant (file, canonical section)
+  MRR           - 1 / rank of the first relevant chunk
+Writes a Markdown table to docs/RETRIEVAL_EVALUATION_RESULTS.md.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+from dataclasses import replace
+from pathlib import Path
+
+from app.config import PROJECT_ROOT, load_settings
+from app.ingestion.chunker import chunk_document, chunk_fixed_size
+from app.ingestion.pipeline import build_corpus
+from app.llm import LLMGateway
+from app.retrieval.embedding_cache import EmbeddingCache
+from app.retrieval.hybrid import HybridRetriever
+
+
+def evaluate(retriever: HybridRetriever, queries: list[dict], k: int, mode: str) -> dict:
+    file_recall, hits, rr, per_query = [], [], [], {}
+    for q in queries:
+        results = retriever.search(q["query"], k=k, mode=mode)
+        files = [h.chunk.source_file for h in results]
+        if q["required_files"]:
+            file_recall.append(sum(f in files for f in q["required_files"]) / len(q["required_files"]))
+
+        def relevant(hit) -> bool:
+            return any(
+                hit.chunk.source_file == f and (s == "*" or hit.chunk.canonical_section == s)
+                for f, s in q["relevant"]
+            )
+
+        first = next((i for i, h in enumerate(results, start=1) if relevant(h)), None)
+        hits.append(1.0 if first else 0.0)
+        rr.append(1.0 / first if first else 0.0)
+        per_query[q["id"]] = first
+    n = len(queries)
+    return {
+        "file_recall": sum(file_recall) / len(file_recall),
+        "hit": sum(hits) / n,
+        "mrr": sum(rr) / n,
+        "per_query": per_query,
+    }
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--k", type=int, default=5)
+    args = parser.parse_args()
+
+    settings = load_settings()
+    llm = LLMGateway(settings)
+    cache = EmbeddingCache(settings.cache_dir, settings.embedding_model)
+    queries = json.loads((PROJECT_ROOT / "eval" / "retrieval_queries.json").read_text(encoding="utf-8"))
+    corpus, cleaned = build_corpus(settings.raw_dir, settings.chunk_max_chars)
+
+    def structured(max_chars: int, contextual: bool = True):
+        chunks = [c for name, text in cleaned.items() for c in chunk_document(name, text, max_chars)]
+        return chunks if contextual else [replace(c, embedding_text=c.text) for c in chunks]
+
+    # Fair comparison: give each fixed window the canonical section in which its
+    # midpoint falls (fixed chunking itself knows nothing about sections).
+    reference = structured(1500)
+    fixed = []
+    for name, text in cleaned.items():
+        spans = sorted((c.start_char, c.canonical_section) for c in reference if c.source_file == name)
+        for c in chunk_fixed_size(name, text, 800, 100):
+            mid = (c.start_char + c.end_char) // 2
+            section = next((s for start, s in reversed(spans) if start <= mid), "other")
+            fixed.append(replace(c, canonical_section=section))
+    configs = [
+        ("A", "Fixed 800/100 chars, dense", fixed, "dense"),
+        ("B", "Structure-aware 1500, no context header, dense", structured(1500, False), "dense"),
+        ("C", "Structure-aware 1500 + context header, dense", structured(1500), "dense"),
+        ("D", "C + BM25 hybrid (RRF)  <- runtime config", structured(1500), "hybrid"),
+        ("E", "Hybrid, 800-char chunks", structured(800), "hybrid"),
+        ("F", "Hybrid, 2500-char chunks", structured(2500), "hybrid"),
+        ("G", "Lexical BM25 only (1500 + header)", structured(1500), "lexical"),
+    ]
+
+    rows, details = [], {}
+    for key, label, chunks, mode in configs:
+        retriever = HybridRetriever(chunks, corpus.documents, llm.embed, cache, settings.rrf_k)
+        retriever.build()
+        result = evaluate(retriever, queries, args.k, mode)
+        details[key] = result["per_query"]
+        rows.append((key, label, len(chunks), result))
+        print(f"{key} {label:52} chunks={len(chunks):4}  file_recall={result['file_recall']:.3f}  "
+              f"hit@{args.k}={result['hit']:.3f}  MRR={result['mrr']:.3f}")
+
+    lines = [
+        f"# Retrieval evaluation results (k={args.k})",
+        "",
+        f"Generated by `python -m scripts.eval_retrieval --k {args.k}` on {len(queries)} labelled "
+        "queries (`eval/retrieval_queries.json`): 4 public questions, 5 atomic sub-questions, "
+        "13 unseen questions. Embedding model: "
+        f"`{settings.embedding_model}`.",
+        "",
+        f"| Config | Description | Chunks | File recall@{args.k} | Section hit@{args.k} | MRR |",
+        "|---|---|---:|---:|---:|---:|",
+    ]
+    for key, label, n, r in rows:
+        lines.append(f"| {key} | {label} | {n} | {r['file_recall']:.3f} | {r['hit']:.3f} | {r['mrr']:.3f} |")
+    lines += ["", "Rank of the first relevant chunk per query (`-` = not in top-k):", "",
+              "| Query | " + " | ".join(details) + " |", "|---|" + "---:|" * len(details)]
+    for q in queries:
+        lines.append(f"| {q['id']} | " + " | ".join(str(details[c][q['id']] or "-") for c in details) + " |")
+    out = PROJECT_ROOT / "docs" / "RETRIEVAL_EVALUATION_RESULTS.md"
+    out.parent.mkdir(exist_ok=True)
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"\nWritten {out}")
+
+
+if __name__ == "__main__":
+    main()

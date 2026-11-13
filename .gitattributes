@@ -1,0 +1,8 @@
+# Keep LF everywhere so data/raw hashes (and thus the manifest fingerprint)
+# are identical on every OS and inside the container.
+* text=auto eol=lf
+# data/raw is the immutable Syntax corpus: store it byte-for-byte (one file
+# ships with CRLF endings) so its sha256 always matches data/manifest.json.
+data/raw/** -text
+*.pdf binary
+*.npz binary

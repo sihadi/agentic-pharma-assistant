@@ -1,0 +1,31 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python / tooling
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+.DS_Store
+
+# Runtime state (rebuilt automatically)
+data/cache/
+data/traces/
+
+# Material received from Syntax that must not be republished
+# (proprietary PDF + .env with the proxy key). The corpus itself lives in data/raw.
+assignment-pharma/
+Cahier_des_*.pdf
+
+# Local editor settings
+.vscode/
+.idea/

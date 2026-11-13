@@ -1,0 +1,718 @@
+{
+  "pipeline_version": "2.0",
+  "fingerprint": "cc65657948b78b7883de84da159a4d850bdd712ff304ed999395552d8141107b",
+  "parameters": {
+    "chunk_max_chars": 1500,
+    "strategy": "structure-aware + contextual header"
+  },
+  "cleaning_rules": [
+    {
+      "name": "zero_width_chars",
+      "rationale": "Invisible BOM / zero-width characters embedded mid-text ('WARNINGS \\ufeff and')."
+    },
+    {
+      "name": "html_sup_sub",
+      "rationale": "Inline HTML left by the HTML->Markdown export (Coumadin<sup>®</sup>, B<sub>12</sub>)."
+    },
+    {
+      "name": "markdown_unescape",
+      "rationale": "Escaped Markdown punctuation (\\[prothrombin test\\]) pollutes tokens."
+    },
+    {
+      "name": "unit_m2_superscript",
+      "rationale": "Lost superscript glued to next word: '1.73 m 2is' -> '1.73 m² is'."
+    },
+    {
+      "name": "unit_m2",
+      "rationale": "Lost superscript in body-surface units: 'mL/min/1.73 m 2' -> 'm²'."
+    },
+    {
+      "name": "vitamin_b12_glued",
+      "rationale": "Lost subscript glued to next word: 'B 12Deficiency' -> 'B12 Deficiency'."
+    },
+    {
+      "name": "vitamin_b12",
+      "rationale": "Lost subscript: 'vitamin B 12' -> 'vitamin B12'."
+    },
+    {
+      "name": "colon_spacing",
+      "rationale": "Label glued to its value: 'Liver warning:This' -> 'Liver warning: This'."
+    },
+    {
+      "name": "bullet_normalization",
+      "rationale": "Unicode bullets -> Markdown list items so the chunker keeps lists intact."
+    },
+    {
+      "name": "trailing_whitespace",
+      "rationale": "Invisible trailing spaces."
+    },
+    {
+      "name": "blank_line_runs",
+      "rationale": "Collapse runs of blank lines (paragraph boundaries are preserved)."
+    }
+  ],
+  "totals": {
+    "documents": 21,
+    "chunks": 587,
+    "chunk_chars_min": 9,
+    "chunk_chars_median": 692,
+    "chunk_chars_max": 1500,
+    "drugs": [
+      "acetaminophen",
+      "albuterol",
+      "amoxicillin",
+      "apixaban",
+      "aspirin",
+      "atorvastatin",
+      "ibuprofen",
+      "metformin",
+      "sertraline",
+      "warfarin"
+    ]
+  },
+  "warnings": [],
+  "documents": [
+    {
+      "source_file": "GLOSSARY.md",
+      "drug": null,
+      "source_type": "glossary",
+      "title": "Pharmacology Glossary",
+      "source_url": null,
+      "aliases": [],
+      "raw_sha256": "412ca7962836aeca512f5045b41a98b2288783c5638eab61b10d41665d3fa080",
+      "cleaned_sha256": "412ca7962836aeca512f5045b41a98b2288783c5638eab61b10d41665d3fa080",
+      "raw_chars": 2820,
+      "cleaned_chars": 2820,
+      "cleaning_ops": {},
+      "chunks": 6,
+      "sections": [
+        "glossary"
+      ]
+    },
+    {
+      "source_file": "dailymed-acetaminophen.md",
+      "drug": "acetaminophen",
+      "source_type": "dailymed",
+      "title": "Acetaminophen (DailyMed label)",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=05618d62-ebec-4d30-989d-999891977e0e",
+      "aliases": [],
+      "raw_sha256": "077092d410a0f222ea2a07426d567a62f936e5f9a49c289ac92f5d411c85359b",
+      "cleaned_sha256": "5c127004cb5d3c0e19c20736d716d9d720b48e9c7fd8f71adcec95e760a09461",
+      "raw_chars": 2120,
+      "cleaned_chars": 2123,
+      "cleaning_ops": {
+        "colon_spacing": 3,
+        "bullet_normalization": 3
+      },
+      "chunks": 3,
+      "sections": [
+        "dosage",
+        "indications",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "dailymed-albuterol.md",
+      "drug": "albuterol",
+      "source_type": "dailymed",
+      "title": "Albuterol (DailyMed label)",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ae35ec1f-526a-49bf-8262-c50e40190d1f",
+      "aliases": [],
+      "raw_sha256": "23b0b179c3393e428cfb53d83c0df407c3225f3606881f70bc58402e296be4f9",
+      "cleaned_sha256": "efd191a28100e05ffdac65831b4aec805e932002eb985b40c39b4b24104a9ca5",
+      "raw_chars": 29025,
+      "cleaned_chars": 29016,
+      "cleaning_ops": {
+        "unit_m2": 9
+      },
+      "chunks": 40,
+      "sections": [
+        "adverse_reactions",
+        "clinical_pharmacology",
+        "contraindications",
+        "dosage",
+        "drug_interactions",
+        "indications",
+        "overdosage",
+        "patient_counseling",
+        "specific_populations",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "dailymed-amoxicillin.md",
+      "drug": "amoxicillin",
+      "source_type": "dailymed",
+      "title": "Amoxicillin (DailyMed label)",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b397d4be-d2ef-419a-98ac-844069c99d56",
+      "aliases": [],
+      "raw_sha256": "19ebd6582beb5a82dd61a8d7e94637deefb6e9cbf944b78cc8983a60bd1d181c",
+      "cleaned_sha256": "d7605c019f6653d059b69a36f041e1fe5c129cd4e581a3cf13b3c8e843c17075",
+      "raw_chars": 26026,
+      "cleaned_chars": 26043,
+      "cleaning_ops": {
+        "colon_spacing": 17
+      },
+      "chunks": 38,
+      "sections": [
+        "adverse_reactions",
+        "clinical_pharmacology",
+        "contraindications",
+        "dosage",
+        "drug_interactions",
+        "indications",
+        "overdosage",
+        "patient_counseling",
+        "specific_populations",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "dailymed-apixaban.md",
+      "drug": "apixaban",
+      "source_type": "dailymed",
+      "title": "Apixaban (DailyMed label)",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=41a133ef-e461-48ad-8221-b735bdd0ec25",
+      "aliases": [],
+      "raw_sha256": "f5c8c960ee548763de9b26f7cb587709a6a9c22586a02465b673a5cb87209bcc",
+      "cleaned_sha256": "f361e297214544b6be240d42e1ec1449be466e4843c9d088a043c0e2398e0e4a",
+      "raw_chars": 47219,
+      "cleaned_chars": 47221,
+      "cleaning_ops": {
+        "colon_spacing": 6,
+        "trailing_whitespace": 4
+      },
+      "chunks": 71,
+      "sections": [
+        "adverse_reactions",
+        "boxed_warning",
+        "clinical_pharmacology",
+        "contraindications",
+        "dosage",
+        "drug_interactions",
+        "indications",
+        "overdosage",
+        "patient_counseling",
+        "specific_populations",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "dailymed-aspirin.md",
+      "drug": "aspirin",
+      "source_type": "dailymed",
+      "title": "Aspirin (DailyMed label)",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=56474a81-6e10-6c67-e063-6294a90a28c5",
+      "aliases": [],
+      "raw_sha256": "1ce163d918c6a2931f6f08f5f39ef663530c641b3d137a5f6c020c0a6e6c102d",
+      "cleaned_sha256": "1ce163d918c6a2931f6f08f5f39ef663530c641b3d137a5f6c020c0a6e6c102d",
+      "raw_chars": 2482,
+      "cleaned_chars": 2482,
+      "cleaning_ops": {},
+      "chunks": 4,
+      "sections": [
+        "dosage",
+        "indications",
+        "overdosage",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "dailymed-atorvastatin.md",
+      "drug": "atorvastatin",
+      "source_type": "dailymed",
+      "title": "Atorvastatin (DailyMed label)",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5ec50d7c-344d-bb7d-e063-6394a90a0679",
+      "aliases": [],
+      "raw_sha256": "6ea3690984612d87b6686162f6fbd96bc5bad7c7021d9125818f9ecf0c1c5f64",
+      "cleaned_sha256": "628bff0cbe375b08c781386e54b607ff42bc252ee78d2d58c7b695860378c4f8",
+      "raw_chars": 46353,
+      "cleaned_chars": 46351,
+      "cleaning_ops": {
+        "unit_m2": 2,
+        "bullet_normalization": 2
+      },
+      "chunks": 50,
+      "sections": [
+        "adverse_reactions",
+        "clinical_pharmacology",
+        "contraindications",
+        "dosage",
+        "drug_interactions",
+        "indications",
+        "overdosage",
+        "patient_counseling",
+        "specific_populations",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "dailymed-ibuprofen.md",
+      "drug": "ibuprofen",
+      "source_type": "dailymed",
+      "title": "Ibuprofen (DailyMed label)",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0fa4cd66-66ad-4ec9-b38c-6b5840df39df",
+      "aliases": [],
+      "raw_sha256": "a2adf1515d39490a013326d11e80a17243f1fccb1c94aef627a8886bf75d2ef7",
+      "cleaned_sha256": "b9b8541acdbff801b5a5f0111c76c66f2e84ae9c92b75b73be4b6fde68df5705",
+      "raw_chars": 41642,
+      "cleaned_chars": 41638,
+      "cleaning_ops": {
+        "zero_width_chars": 3,
+        "colon_spacing": 3,
+        "trailing_whitespace": 2
+      },
+      "chunks": 43,
+      "sections": [
+        "adverse_reactions",
+        "boxed_warning",
+        "clinical_pharmacology",
+        "contraindications",
+        "dosage",
+        "drug_interactions",
+        "indications",
+        "overdosage",
+        "patient_counseling",
+        "specific_populations",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "dailymed-metformin.md",
+      "drug": "metformin",
+      "source_type": "dailymed",
+      "title": "Metformin (DailyMed label)",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=583f2a2e-a9d7-f266-e063-6294a90ad0ab",
+      "aliases": [],
+      "raw_sha256": "04447e3c31a9421404c9b259facc2607f95a1dc4424454f312cf0cb1f6656ae2",
+      "cleaned_sha256": "59d2943b33761168abef7a833dd18dc9065d62e46b62117ec1e5c4ddd2181efc",
+      "raw_chars": 33013,
+      "cleaned_chars": 33003,
+      "cleaning_ops": {
+        "unit_m2_superscript": 1,
+        "unit_m2": 11,
+        "vitamin_b12_glued": 10,
+        "vitamin_b12": 1,
+        "colon_spacing": 2
+      },
+      "chunks": 41,
+      "sections": [
+        "adverse_reactions",
+        "boxed_warning",
+        "clinical_pharmacology",
+        "contraindications",
+        "dosage",
+        "drug_interactions",
+        "indications",
+        "overdosage",
+        "patient_counseling",
+        "specific_populations",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "dailymed-sertraline.md",
+      "drug": "sertraline",
+      "source_type": "dailymed",
+      "title": "Sertraline (DailyMed label)",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c9e89324-0834-4434-8168-b4f2fa1e0a08",
+      "aliases": [],
+      "raw_sha256": "272946a463178dafa55027c24808442c2b19d74a12bf61bb8feea643bb06231d",
+      "cleaned_sha256": "81147cdb2c2f431ef7065b3767131dafe7db0eaf6bec175204e1d49ca59acb83",
+      "raw_chars": 76387,
+      "cleaned_chars": 76378,
+      "cleaning_ops": {
+        "trailing_whitespace": 9
+      },
+      "chunks": 79,
+      "sections": [
+        "adverse_reactions",
+        "boxed_warning",
+        "clinical_pharmacology",
+        "contraindications",
+        "dosage",
+        "drug_interactions",
+        "indications",
+        "overdosage",
+        "patient_counseling",
+        "specific_populations",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "dailymed-warfarin.md",
+      "drug": "warfarin",
+      "source_type": "dailymed",
+      "title": "Warfarin (DailyMed label)",
+      "source_url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8ad881e0-ca41-42ad-9d7d-eb85b3a30af0",
+      "aliases": [],
+      "raw_sha256": "7d55941843a0bc803482727b57f12875e7b0330403dab9fe0bc7e4e8b7750d6e",
+      "cleaned_sha256": "7d55941843a0bc803482727b57f12875e7b0330403dab9fe0bc7e4e8b7750d6e",
+      "raw_chars": 46576,
+      "cleaned_chars": 46576,
+      "cleaning_ops": {},
+      "chunks": 51,
+      "sections": [
+        "adverse_reactions",
+        "boxed_warning",
+        "clinical_pharmacology",
+        "contraindications",
+        "dosage",
+        "drug_interactions",
+        "indications",
+        "overdosage",
+        "patient_counseling",
+        "specific_populations",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "medlineplus-acetaminophen.md",
+      "drug": "acetaminophen",
+      "source_type": "medlineplus",
+      "title": "Acetaminophen (MedlinePlus)",
+      "source_url": "https://medlineplus.gov/druginfo/meds/a681004.html",
+      "aliases": [
+        "APAP",
+        "N-acetyl-para-aminophenol",
+        "Paracetamol"
+      ],
+      "raw_sha256": "79f867d9498a16ef39b71bbc097ee388b88bd28d160d224faf990abec298a17b",
+      "cleaned_sha256": "f9d3f6b674b2ef6cadebe827ed011f70ccd558580fdf27c7453880f9d0a77d4b",
+      "raw_chars": 10984,
+      "cleaned_chars": 10951,
+      "cleaning_ops": {
+        "html_sup_sub": 3
+      },
+      "chunks": 18,
+      "sections": [
+        "adverse_reactions",
+        "boxed_warning",
+        "brand_names",
+        "diet",
+        "dosage",
+        "how_supplied_storage",
+        "indications",
+        "missed_dose",
+        "other",
+        "overdosage",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "medlineplus-albuterol.md",
+      "drug": "albuterol",
+      "source_type": "medlineplus",
+      "title": "Albuterol (MedlinePlus)",
+      "source_url": "https://medlineplus.gov/druginfo/meds/a607004.html",
+      "aliases": [
+        "salbutamol"
+      ],
+      "raw_sha256": "658ae5364a2e729060ef3d4e08f489c1c5e9a7dd2dfd3c08c85304d2800b4941",
+      "cleaned_sha256": "c6d69a93f59a60c717aa9e37ade2e372727fa856d5328630e62dcf0adb4cd405",
+      "raw_chars": 6910,
+      "cleaned_chars": 6898,
+      "cleaning_ops": {
+        "html_sup_sub": 1,
+        "markdown_unescape": 1
+      },
+      "chunks": 14,
+      "sections": [
+        "adverse_reactions",
+        "brand_names",
+        "diet",
+        "dosage",
+        "how_supplied_storage",
+        "indications",
+        "missed_dose",
+        "other",
+        "overdosage",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "medlineplus-amoxicillin.md",
+      "drug": "amoxicillin",
+      "source_type": "medlineplus",
+      "title": "Amoxicillin (MedlinePlus)",
+      "source_url": "https://medlineplus.gov/druginfo/meds/a685001.html",
+      "aliases": [
+        "Amoxil",
+        "Dispermox",
+        "Larotid Suspension",
+        "Polymox Suspension",
+        "Trimox",
+        "Wymox",
+        "p-Hydroxyampicillin"
+      ],
+      "raw_sha256": "f67adca7b539aee0889e976d600827851df993cfe25f64e0f1d389915e1d1fca",
+      "cleaned_sha256": "050afab0e6e52c3619206f7db871704d106b765d4d28be1af17bb64f587ab015",
+      "raw_chars": 8525,
+      "cleaned_chars": 8338,
+      "cleaning_ops": {
+        "html_sup_sub": 17
+      },
+      "chunks": 15,
+      "sections": [
+        "adverse_reactions",
+        "brand_names",
+        "diet",
+        "dosage",
+        "how_supplied_storage",
+        "indications",
+        "missed_dose",
+        "other",
+        "overdosage",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "medlineplus-apixaban.md",
+      "drug": "apixaban",
+      "source_type": "medlineplus",
+      "title": "Apixaban (MedlinePlus)",
+      "source_url": "https://medlineplus.gov/druginfo/meds/a613032.html",
+      "aliases": [
+        "Eliquis",
+        "Eliquis Sprinkle"
+      ],
+      "raw_sha256": "b1c0d5c5dc6df68a42e033af05e827cb71dca21cde5a9ad02a159e09d4cf34f3",
+      "cleaned_sha256": "60461b0a7cfb001f73cd0997f6ad5628799ff552f488ae8305bc44a3a92b4cdb",
+      "raw_chars": 10201,
+      "cleaned_chars": 10168,
+      "cleaning_ops": {
+        "html_sup_sub": 3
+      },
+      "chunks": 15,
+      "sections": [
+        "adverse_reactions",
+        "boxed_warning",
+        "brand_names",
+        "diet",
+        "dosage",
+        "how_supplied_storage",
+        "indications",
+        "missed_dose",
+        "other",
+        "overdosage",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "medlineplus-aspirin.md",
+      "drug": "aspirin",
+      "source_type": "medlineplus",
+      "title": "Aspirin (MedlinePlus)",
+      "source_url": "https://medlineplus.gov/druginfo/meds/a682878.html",
+      "aliases": [
+        "ASA",
+        "Acetylsalicylic acid",
+        "Acuprin",
+        "Anacin Aspirin Regimen",
+        "Ascriptin",
+        "Aspergum",
+        "Aspidrox",
+        "Aspir-Mox",
+        "Aspir-trin",
+        "Aspirtab",
+        "Bayer Aspirin",
+        "Bufferin",
+        "Buffex",
+        "Easprin",
+        "Ecotrin",
+        "Empirin",
+        "Entaprin",
+        "Entercote",
+        "Fasprin",
+        "Genacote",
+        "Gennin-FC",
+        "Genprin",
+        "Halfprin",
+        "Magnaprin",
+        "Miniprin",
+        "Minitabs",
+        "Ridiprin",
+        "Sloprin",
+        "Uni-Buff",
+        "Uni-Tren",
+        "Valomag",
+        "Zorprin"
+      ],
+      "raw_sha256": "dbae3f0f2b62dacddabfdffad32c1b70ae0d5127c039c4e387e8810fa575d97d",
+      "cleaned_sha256": "648d2ca57c828cd5f3fec12aad91b814d29d7c45ce3b4a52749f649b474651be",
+      "raw_chars": 12401,
+      "cleaned_chars": 11158,
+      "cleaning_ops": {
+        "html_sup_sub": 113
+      },
+      "chunks": 17,
+      "sections": [
+        "adverse_reactions",
+        "brand_names",
+        "diet",
+        "dosage",
+        "how_supplied_storage",
+        "indications",
+        "missed_dose",
+        "other",
+        "overdosage",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "medlineplus-atorvastatin.md",
+      "drug": "atorvastatin",
+      "source_type": "medlineplus",
+      "title": "Atorvastatin (MedlinePlus)",
+      "source_url": "https://medlineplus.gov/druginfo/meds/a600045.html",
+      "aliases": [
+        "Atorvaliq",
+        "Lipitor"
+      ],
+      "raw_sha256": "2e065e896e075c526bfbc55137bf537f2a39c8cd202155a84710016e8cd460d1",
+      "cleaned_sha256": "038549f5c516419a04769cfc7bb4f4573a7f4b412ff60ba173ffcf06f01d06c3",
+      "raw_chars": 8469,
+      "cleaned_chars": 8391,
+      "cleaning_ops": {
+        "html_sup_sub": 7,
+        "markdown_unescape": 1
+      },
+      "chunks": 14,
+      "sections": [
+        "adverse_reactions",
+        "brand_names",
+        "diet",
+        "dosage",
+        "how_supplied_storage",
+        "indications",
+        "missed_dose",
+        "other",
+        "overdosage",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "medlineplus-ibuprofen.md",
+      "drug": "ibuprofen",
+      "source_type": "medlineplus",
+      "title": "Ibuprofen (MedlinePlus)",
+      "source_url": "https://medlineplus.gov/druginfo/meds/a682159.html",
+      "aliases": [],
+      "raw_sha256": "9ead0e8c7b5ad11ff56833acbdcbdb39905779c2880a2f18e571856fb1a56871",
+      "cleaned_sha256": "086145e7d70d4afce20f538af0710fa0ea6dc28d24b08b6864225332add84aa4",
+      "raw_chars": 15481,
+      "cleaned_chars": 15470,
+      "cleaning_ops": {
+        "html_sup_sub": 1
+      },
+      "chunks": 20,
+      "sections": [
+        "adverse_reactions",
+        "boxed_warning",
+        "brand_names",
+        "diet",
+        "dosage",
+        "how_supplied_storage",
+        "indications",
+        "missed_dose",
+        "other",
+        "overdosage",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "medlineplus-metformin.md",
+      "drug": "metformin",
+      "source_type": "medlineplus",
+      "title": "Metformin (MedlinePlus)",
+      "source_url": "https://medlineplus.gov/druginfo/meds/a696005.html",
+      "aliases": [],
+      "raw_sha256": "2d6e98cb152a31be41d7034457e14c9f85f27dfec0268c546ed1323b879c97cb",
+      "cleaned_sha256": "42371306bdabb5febe87ce2b3344e4e3ffc25e46c74df0c6f8bed2975a84acea",
+      "raw_chars": 10603,
+      "cleaned_chars": 10372,
+      "cleaning_ops": {
+        "html_sup_sub": 21
+      },
+      "chunks": 16,
+      "sections": [
+        "adverse_reactions",
+        "boxed_warning",
+        "brand_names",
+        "diet",
+        "dosage",
+        "how_supplied_storage",
+        "indications",
+        "missed_dose",
+        "other",
+        "overdosage",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "medlineplus-sertraline.md",
+      "drug": "sertraline",
+      "source_type": "medlineplus",
+      "title": "Sertraline (MedlinePlus)",
+      "source_url": "https://medlineplus.gov/druginfo/meds/a697048.html",
+      "aliases": [
+        "Zoloft"
+      ],
+      "raw_sha256": "bae30ac0e5f3b5d591da78b46c8b483de67f16463f4fc5a8bed4cbe939bfede8",
+      "cleaned_sha256": "4f1780d00bedaf7679d57cac08da47bcf3cc5d6333111a381d5c70a8d10d50a5",
+      "raw_chars": 10720,
+      "cleaned_chars": 10707,
+      "cleaning_ops": {
+        "html_sup_sub": 1,
+        "markdown_unescape": 2
+      },
+      "chunks": 16,
+      "sections": [
+        "adverse_reactions",
+        "boxed_warning",
+        "brand_names",
+        "diet",
+        "dosage",
+        "how_supplied_storage",
+        "indications",
+        "missed_dose",
+        "other",
+        "overdosage",
+        "warnings_precautions"
+      ]
+    },
+    {
+      "source_file": "medlineplus-warfarin.md",
+      "drug": "warfarin",
+      "source_type": "medlineplus",
+      "title": "Warfarin (MedlinePlus)",
+      "source_url": "https://medlineplus.gov/druginfo/meds/a682277.html",
+      "aliases": [
+        "Coumadin",
+        "Jantoven"
+      ],
+      "raw_sha256": "5ea0ca6c7ae3afa756fdcb1e995f27a23aba14b20c9528cf3a11699eacf9e5cc",
+      "cleaned_sha256": "1db8d93008540fc3f1f36075353b7160a85d345a89b05592d8e7ca1fee9406f1",
+      "raw_chars": 11491,
+      "cleaned_chars": 11454,
+      "cleaning_ops": {
+        "html_sup_sub": 3,
+        "markdown_unescape": 4
+      },
+      "chunks": 16,
+      "sections": [
+        "adverse_reactions",
+        "boxed_warning",
+        "brand_names",
+        "diet",
+        "dosage",
+        "how_supplied_storage",
+        "indications",
+        "missed_dose",
+        "other",
+        "overdosage",
+        "warnings_precautions"
+      ]
+    }
+  ]
+}
